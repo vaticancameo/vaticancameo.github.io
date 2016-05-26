@@ -1,0 +1,56 @@
+---
+layout: post
+title: What is closure in Javascript?
+categories:
+excerpt: "When you seek closure.."
+tags: [javascript, closure, scope]
+---
+
+To understand closure, first we have to understanding scoping. See [link](/variable-scopes)
+
+<br/>
+The concept is not too difficult to understand. For some reason, I always imaging a little sheep pen within another sheep pen, where the inner sheep pen is fenced by one way mirrors, so that the inner sheep can see the outer sheep but not vice versa.
+
+<br/>
+The technical definition of a closure is a function that still retains access to variables in the context in which it was created, even after the outer function has returned. In essence, the inner function closes over the variables of the outer function. You won't be able to access the outer variables directly, but the returned inner function will still know the value of the outer variables if used.
+
+<br/>
+Since there are no private method in the javascript, closures are a great way to keep certain information secret while still be able to manipulate them. Let's see an example:
+
+{% highlight javascript %}
+var countSheep = function() {
+  var sheep = 0;
+  return function() {
+    console.log(sheep++);
+  }
+}
+
+//sheepCounter is a function, no values get returned
+var sheepCounter = countSheep();
+sheepCounter() // 0
+sheepCounter() // 1
+sheepCounter() // 2
+sheepCounter() // 3
+{% endhighlight %}
+
+Great for trying to sleep. So what's happening here? Notice that we returned an anonymous function (a function without a name to reference) that does not get executed immediately. Instead, it can be saved to a variable which can then be called with parenthesis. But you'll notice that countSheep has already ran and returned, but subsequent calls to sheepCounter still 'remembers' the value of the sheep variable, and can even modified its value. That's closure! Isn't it neat?
+
+<br/>
+We can pass in arguments in closures
+
+{% highlight javascript %}
+var chooseYogurt(flavor) {
+  return function(topping) {
+    return {flavor: topping};
+  }
+}
+
+var strawberryYogurt = chooseYogurt('strawberry');
+console.log(strawberryYogurt('mochi')); //{strawberry: 'mochi'};
+console.log(strawberryYogurt('cheesecake')); //{strawberry: 'cheesecake'};
+
+var plainYogurt = chooseYogurt('plain');
+console.log(plainYogurt('chocolate')); //{plain: 'chocolate'}
+{% endhighlight %}
+
+That was a trivial example, but you get the idea.
